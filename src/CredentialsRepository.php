@@ -15,6 +15,16 @@ class CredentialsRepository
         $this->database = $database;
     }
 
+    public function get() : array
+    {
+        $return = [];
+        $credentials = $this->database->get('credentials');
+        foreach ($credentials as $credential) {
+            $return[$credential['id']] = new Credential($credential['username'], $credential['password'], $credential['login_url']);
+        }
+        return $return;
+    }
+
     public function getById(int $id) : Credential
     {
         $this->database->where('id', $id);

@@ -20,6 +20,31 @@ class CredentialsRepositoryTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(CredentialsRepository::class, $repository);
     }
 
+    public function testCanGetMany()
+    {
+        $data = [
+            [
+                'id' => 1,
+                'username' => 'TestUsername',
+                'password' => 'TestPassword',
+                'login_url' => 'TestLoginUrl'
+            ],
+            [
+                'id' => 2,
+                'username' => 'TestUsername',
+                'password' => 'TestPassword',
+                'login_url' => 'TestLoginUrl'
+            ]
+        ];
+        $this->mysql->get(
+            \Prophecy\Argument::type('string')
+        )->willReturn($data);
+
+        $repository = new CredentialsRepository($this->mysql->reveal());
+        $credentials = $repository->get();
+        $this->assertInstanceOf(Credential::class, $credentials[2]);
+    }
+
     public function testCanGetById()
     {
         $data = [
