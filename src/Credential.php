@@ -33,4 +33,13 @@ class Credential
     {
         return $this->login_url;
     }
+
+    public function toArray() : array
+    {
+        return [
+            'username' => $this->username,
+            'password' => $this->password,
+            'login_url' => $this->login_url
+        ];
+    }
 }

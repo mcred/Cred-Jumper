@@ -23,4 +23,11 @@ class CredentialTest extends \PHPUnit\Framework\TestCase
         $credential = new Credential('username', 'password', 'https://someurl.com');
         $this->assertEquals('https://someurl.com', $credential->getLoginUrl());
     }
+
+    public function testToArray()
+    {
+        $credential = new Credential('username', 'password', 'https://someurl.com');
+        $credentialArray = $credential->toArray();
+        $this->assertEquals('username', $credentialArray['username']);
+    }
 }
