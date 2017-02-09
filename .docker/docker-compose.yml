@@ -11,7 +11,7 @@ services:
     ports:
         - "1013:80"
     volumes:
-        - ./:/var/www/html
+        - ../:/var/www/html
     command: /usr/sbin/apache2ctl -D FOREGROUND
   db:
     container_name: cred-mysql
@@ -19,7 +19,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: supersecret1
     ports:
-      - "2112:3306"
+      - "3306:3306"
     volumes:
       - creddata:/var/lib/mysql
     logging:
