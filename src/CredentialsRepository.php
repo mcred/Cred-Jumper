@@ -31,4 +31,11 @@ class CredentialsRepository
         $credential = $this->database->getOne('credentials');
         return new Credential($credential['username'], $credential['password'], $credential['login_url']);
     }
+
+    public function add(array $data) : void
+    {
+        if (!is_int($this->database->insert('credentials', $data))) {
+            throw new \Exception('New Credential could not be saved.');
+        }
+    }
 }

@@ -66,4 +66,37 @@ class CredentialsRepositoryTest extends \PHPUnit\Framework\TestCase
         $credential = $repository->getById(1);
         $this->assertInstanceOf(Credential::class, $credential);
     }
+
+    public function testCanCreateNew()
+    {
+        $data = [
+            'username' => 'TestUsername',
+            'password' => 'TestPassword',
+            'login_url' => 'TestLoginUrl'
+        ];
+
+        $this->mysql->insert(
+            \Prophecy\Argument::type('string'),
+            \Prophecy\Argument::type('array')
+        )->willReturn(2);
+
+        $repository = new CredentialsRepository($this->mysql->reveal());
+        $repository->add($data);
+    }
+
+    public function testCanNotCreateNew()
+    {
+        $data = [];
+
+        $this->mysql->insert(
+            \Prophecy\Argument::type('string'),
+            \Prophecy\Argument::type('array')
+        )->willReturn(false);
+
+        $this->expectException('\Exception');
+        $this->expectExceptionMessage('New Credential could not be saved.');
+
+        $repository = new CredentialsRepository($this->mysql->reveal());
+        $repository->add($data);
+    }
 }
