@@ -3,8 +3,8 @@ volumes:
   creddata:
     driver: local
 services:
-  credjumper:
-    container_name: credjumper
+  httpd:
+    container_name: cred-httpd
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -13,3 +13,14 @@ services:
     volumes:
         - ./:/var/www/html
     command: /usr/sbin/apache2ctl -D FOREGROUND
+  db:
+    container_name: cred-mysql
+    image: mysql:5.6
+    environment:
+      MYSQL_ROOT_PASSWORD: supersecret1
+    ports:
+      - "2112:3306"
+    volumes:
+      - creddata:/var/lib/mysql
+    logging:
+      driver: "json-file"
