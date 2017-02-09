@@ -1,0 +1,15 @@
+version: '2'
+volumes:
+  creddata:
+    driver: local
+services:
+  credjumper:
+    container_name: credjumper
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+        - "1013:80"
+    volumes:
+        - ./:/var/www/html
+    command: /usr/sbin/apache2ctl -D FOREGROUND
