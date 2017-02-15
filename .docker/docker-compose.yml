@@ -11,7 +11,8 @@ services:
     ports:
         - "1013:80"
     volumes:
-        - ../:/var/www/html
+        - ../:/var/www/
+        - ../webroot:/var/www/html
     command: /usr/sbin/apache2ctl -D FOREGROUND
   db:
     container_name: cred-mysql
