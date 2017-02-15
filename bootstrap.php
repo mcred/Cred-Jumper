@@ -11,4 +11,5 @@ $dotenv->required([
     'db_username',
     'db_password',
     'db_port',
+    'salt'
 ])->notEmpty();
