@@ -2,14 +2,10 @@
 /**
  * Define Routes here
  */
-$router->get('/', function () {
-    return 'Hello, PHRoute';
-});
+$router->get('/', ['CredJumper\CredentialsRepository', 'get']);
 
 /**
  * APIs that do not require authorization
  */
-$router->get('/merchants/{id:i}?/{status_id:i}?', ['PayScape\MerchantApi', 'getMerchants']);
-$router->post('/merchants', ['PayScape\MerchantApi', 'postMerchants']);
-$router->put('/merchants', ['PayScape\MerchantApi', 'putMerchant']);
-$router->delete('/merchant/{id:i}', ['PayScape\MerchantApi', 'deleteMerchants']);
+$router->get('/credentials/{id:i}?', ['CredJumper\CredentialsRepository', 'get']);
+$router->post('/credentials', ['CredJumper\CredentialsRepository', 'add']);
