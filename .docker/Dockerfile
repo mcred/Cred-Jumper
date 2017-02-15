@@ -12,7 +12,9 @@ RUN curl -o installer.php https://getcomposer.org/installer
 RUN php -f installer.php
 RUN mv composer.phar /usr/bin/composer
 RUN chmod +x /usr/bin/composer
+RUN a2enmod rewrite
+RUN a2enmod headers
 
-COPY ./httpd.conf /etc/httpd/conf/
+COPY ./httpd.conf /etc/apache2/apache2.conf
 
 EXPOSE  80
