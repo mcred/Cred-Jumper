@@ -14,16 +14,11 @@ require __DIR__.'/../bootstrap.php';
 
 function logError($message)
 {
-    error_log("Spaceballs Error: [". date("Y/m/d h:i:s", time()) ."] ".$message);
+    error_log("CredJumper Error: [". date("Y/m/d h:i:s", time()) ."] ".$message);
 }
 
-/**
- * Set error reporting if local environment
- */
-if ($_ENV['APP_ENV'] == 'local') {
-    error_reporting(E_ALL);
-    ini_set('display_errors', 1);
-}
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 /**
  * Include route and dependency definitions
