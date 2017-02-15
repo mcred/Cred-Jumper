@@ -8,7 +8,30 @@ namespace CredJumper;
  */
 class Api
 {
-    public function __construct()
+    private $database;
+    private $request;
+    private $salt;
+
+    public function __construct(
+        \MysqliDb $database,
+        \Zend\Diactoros\ServerRequest $request,
+        string $salt)
     {
+        $this->database = $database;
+        $this->request = $request;
+        $this->salt = $salt;
+    }
+
+    public function credential_get()
+    {
+        $repo = new CredentialsRepository($this->database, $this->salt);
+        return $repo->get();
+    }
+
+    public function credential_add()
+    {
+        var_dump($this->request->getBody()->getContents());
+
+        //$repo = new CredentialsRepository($this->database, $this->salt);
     }
 }

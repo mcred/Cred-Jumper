@@ -26,6 +26,6 @@ $container['Request'] = function ($c) {
     );
 };
 
-$container['CredJumper\CredentialsRepository'] = function ($c) {
-    return new \CredJumper\CredentialsRepository($c['\MysqliDb'], $_ENV['salt']);
+$container['CredJumper\Api'] = function ($c) {
+    return new \CredJumper\Api($c['\MysqliDb'], $c['Request'], $_ENV['salt']);
 };
