@@ -9,10 +9,36 @@ namespace CredJumper;
 class CredentialsRepository
 {
     private $database;
+    private $salt;
 
-    public function __construct(\MysqliDb $database)
+    const IV_LEN = 16;
+    const ENC_METHOD = 'aes-256-ctr';
+
+    public function __construct(\MysqliDb $database, string $salt)
     {
         $this->database = $database;
+        $this->salt = $salt;
+    }
+
+    private function encryptPassword(string $password) : string
+    {
+        $iv = random_bytes(self::IV_LEN);
+        return $iv.openssl_encrypt($password, self::ENC_METHOD, $this->salt, 0, $iv);
+    }
+
+    private function decryptPassword(string $password) : string
+    {
+        $iv = substr($password, 0, self::IV_LEN);
+        return openssl_decrypt(substr($password, self::IV_LEN), self::ENC_METHOD, $this->salt, 0, $iv);
+    }
+
+    private function hasRequiredFields(array $data) : void
+    {
+        $required = ['username', 'password', 'login_url'];
+        $diff = array_diff($required, array_keys($data));
+        if (!empty($diff)) {
+            throw new \InvalidArgumentException('Credential is missing required fields.');
+        }
     }
 
     public function get() : array
@@ -20,7 +46,7 @@ class CredentialsRepository
         $return = [];
         $credentials = $this->database->get('credentials');
         foreach ($credentials as $credential) {
-            $return[$credential['id']] = new Credential($credential['username'], $credential['password'], $credential['login_url']);
+            $return[$credential['id']] = new Credential($credential['username'], $this->decryptPassword($credential['password']), $credential['login_url']);
         }
         return $return;
     }
@@ -34,6 +60,8 @@ class CredentialsRepository
 
     public function add(array $data) : void
     {
+        $this->hasRequiredFields($data);
+        $data['password'] = $this->encryptPassword($data['password']);
         if (!is_int($this->database->insert('credentials', $data))) {
             throw new \Exception('New Credential could not be saved.');
         }

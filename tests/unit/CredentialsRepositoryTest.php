@@ -8,15 +8,19 @@ use \Prophecy;
 */
 class CredentialsRepositoryTest extends \PHPUnit\Framework\TestCase
 {
+    private $prophet;
+    private $salt;
+
     public function setup()
     {
         $this->prophet = new Prophecy\Prophet;
+        $this->salt = 'testSalttestSalt';
         $this->mysql = $this->prophet->prophesize("\MysqliDb");
     }
 
     public function testCanInstantiate()
     {
-        $repository = new CredentialsRepository($this->mysql->reveal());
+        $repository = new CredentialsRepository($this->mysql->reveal(), $this->salt);
         $this->assertInstanceOf(CredentialsRepository::class, $repository);
     }
 
@@ -26,13 +30,13 @@ class CredentialsRepositoryTest extends \PHPUnit\Framework\TestCase
             [
                 'id' => 1,
                 'username' => 'TestUsername',
-                'password' => 'TestPassword',
+                'password' => ':V?Y?4?h,?gϔpSSvcpdv3288iX9xn',
                 'login_url' => 'TestLoginUrl'
             ],
             [
                 'id' => 2,
                 'username' => 'TestUsername',
-                'password' => 'TestPassword',
+                'password' => ':V?Y?4?h,?gϔpSSvcpdv3288iX9xn',
                 'login_url' => 'TestLoginUrl'
             ]
         ];
@@ -40,7 +44,7 @@ class CredentialsRepositoryTest extends \PHPUnit\Framework\TestCase
             \Prophecy\Argument::type('string')
         )->willReturn($data);
 
-        $repository = new CredentialsRepository($this->mysql->reveal());
+        $repository = new CredentialsRepository($this->mysql->reveal(), $this->salt);
         $credentials = $repository->get();
         $this->assertInstanceOf(Credential::class, $credentials[2]);
     }
@@ -49,7 +53,7 @@ class CredentialsRepositoryTest extends \PHPUnit\Framework\TestCase
     {
         $data = [
             'username' => 'TestUsername',
-            'password' => 'TestPassword',
+            'password' => ':V?Y?4?h,?gϔpSSvcpdv3288iX9xn',
             'login_url' => 'TestLoginUrl'
         ];
 
@@ -62,7 +66,7 @@ class CredentialsRepositoryTest extends \PHPUnit\Framework\TestCase
             \Prophecy\Argument::type('string')
         )->willReturn($data);
 
-        $repository = new CredentialsRepository($this->mysql->reveal());
+        $repository = new CredentialsRepository($this->mysql->reveal(), $this->salt);
         $credential = $repository->getById(1);
         $this->assertInstanceOf(Credential::class, $credential);
     }
@@ -80,13 +84,33 @@ class CredentialsRepositoryTest extends \PHPUnit\Framework\TestCase
             \Prophecy\Argument::type('array')
         )->willReturn(2);
 
-        $repository = new CredentialsRepository($this->mysql->reveal());
+        $repository = new CredentialsRepository($this->mysql->reveal(), $this->salt);
+        $repository->add($data);
+    }
+
+    public function testMissingRequiredFields()
+    {
+        $data = [];
+
+        $this->mysql->insert(
+            \Prophecy\Argument::type('string'),
+            \Prophecy\Argument::type('array')
+        )->willReturn(false);
+
+        $this->expectException('\InvalidArgumentException');
+        $this->expectExceptionMessage('Credential is missing required fields.');
+
+        $repository = new CredentialsRepository($this->mysql->reveal(), $this->salt);
         $repository->add($data);
     }
 
     public function testCanNotCreateNew()
     {
-        $data = [];
+        $data = [
+            'username' => 'TestUsername',
+            'password' => 'TestPassword',
+            'login_url' => 'TestLoginUrl'
+        ];
 
         $this->mysql->insert(
             \Prophecy\Argument::type('string'),
@@ -96,7 +120,7 @@ class CredentialsRepositoryTest extends \PHPUnit\Framework\TestCase
         $this->expectException('\Exception');
         $this->expectExceptionMessage('New Credential could not be saved.');
 
-        $repository = new CredentialsRepository($this->mysql->reveal());
+        $repository = new CredentialsRepository($this->mysql->reveal(), $this->salt);
         $repository->add($data);
     }
 }
