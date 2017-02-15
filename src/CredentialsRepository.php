@@ -23,11 +23,12 @@ class CredentialsRepository
     private function encryptPassword(string $password) : string
     {
         $iv = random_bytes(self::IV_LEN);
-        return $iv.openssl_encrypt($password, self::ENC_METHOD, $this->salt, 0, $iv);
+        return urlencode($iv.openssl_encrypt($password, self::ENC_METHOD, $this->salt, 0, $iv));
     }
 
     private function decryptPassword(string $password) : string
     {
+        $password = urldecode($password);
         $iv = substr($password, 0, self::IV_LEN);
         return openssl_decrypt(substr($password, self::IV_LEN), self::ENC_METHOD, $this->salt, 0, $iv);
     }
@@ -55,7 +56,7 @@ class CredentialsRepository
     {
         $this->database->where('id', $id);
         $credential = $this->database->getOne('credentials');
-        return new Credential($credential['username'], $credential['password'], $credential['login_url']);
+        return new Credential($credential['username'], $this->decryptPassword($credential['password']), $credential['login_url']);
     }
 
     public function add(array $data) : void

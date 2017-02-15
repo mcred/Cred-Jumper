@@ -53,7 +53,7 @@ class CredentialsRepositoryTest extends \PHPUnit\Framework\TestCase
     {
         $data = [
             'username' => 'TestUsername',
-            'password' => ':V?Y?4?h,?gϔpSSvcpdv3288iX9xn',
+            'password' => 'z%89o%D3%0E%BA5U%EF%86%09%7E%F9f8%14G1ZkLpa8DnkItTI3',
             'login_url' => 'TestLoginUrl'
         ];
 
