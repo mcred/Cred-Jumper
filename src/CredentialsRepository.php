@@ -47,7 +47,8 @@ class CredentialsRepository
         $return = [];
         $credentials = $this->database->get('credentials');
         foreach ($credentials as $credential) {
-            $return[$credential['id']] = new Credential($credential['username'], $this->decryptPassword($credential['password']), $credential['login_url']);
+            $cred = new Credential($credential['username'], $this->decryptPassword($credential['password']), $credential['login_url']);
+            $return[$credential['id']] = $cred->toArray();
         }
         return $return;
     }
