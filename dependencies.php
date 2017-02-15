@@ -25,3 +25,7 @@ $container['Request'] = function ($c) {
         $_FILES
     );
 };
+
+$container['CredJumper\CredentialsRepository'] = function ($c) {
+    return new \CredJumper\CredentialsRepository($c['\MysqliDb'], $_ENV['salt']);
+};
