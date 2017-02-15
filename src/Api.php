@@ -30,8 +30,7 @@ class Api
 
     public function credential_add()
     {
-        var_dump($this->request->getBody()->getContents());
-
-        //$repo = new CredentialsRepository($this->database, $this->salt);
+        $repo = new CredentialsRepository($this->database, $this->salt);
+        return $repo->add($this->request->getParsedBody());
     }
 }
