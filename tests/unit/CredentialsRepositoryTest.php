@@ -46,7 +46,7 @@ class CredentialsRepositoryTest extends \PHPUnit\Framework\TestCase
 
         $repository = new CredentialsRepository($this->mysql->reveal(), $this->salt);
         $credentials = $repository->get();
-        $this->assertInstanceOf(Credential::class, $credentials[2]);
+        $this->assertEquals('TestUsername', $credentials[2]['username']);
     }
 
     public function testCanGetById()
