@@ -24,31 +24,6 @@ class CredentialsRepositoryTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(CredentialsRepository::class, $repository);
     }
 
-    public function testCanGetMany()
-    {
-        $data = [
-            [
-                'id' => 1,
-                'username' => 'TestUsername',
-                'password' => ':V?Y?4?h,?gϔpSSvcpdv3288iX9xn',
-                'login_url' => 'TestLoginUrl'
-            ],
-            [
-                'id' => 2,
-                'username' => 'TestUsername',
-                'password' => ':V?Y?4?h,?gϔpSSvcpdv3288iX9xn',
-                'login_url' => 'TestLoginUrl'
-            ]
-        ];
-        $this->mysql->get(
-            \Prophecy\Argument::type('string')
-        )->willReturn($data);
-
-        $repository = new CredentialsRepository($this->mysql->reveal(), $this->salt);
-        $credentials = $repository->get();
-        $this->assertEquals('TestUsername', $credentials[2]['username']);
-    }
-
     public function testCanGetById()
     {
         $data = [
@@ -69,23 +44,6 @@ class CredentialsRepositoryTest extends \PHPUnit\Framework\TestCase
         $repository = new CredentialsRepository($this->mysql->reveal(), $this->salt);
         $credential = $repository->getById(1);
         $this->assertInstanceOf(Credential::class, $credential);
-    }
-
-    public function testCanCreateNew()
-    {
-        $data = [
-            'username' => 'TestUsername',
-            'password' => 'TestPassword',
-            'login_url' => 'TestLoginUrl'
-        ];
-
-        $this->mysql->insert(
-            \Prophecy\Argument::type('string'),
-            \Prophecy\Argument::type('array')
-        )->willReturn(2);
-
-        $repository = new CredentialsRepository($this->mysql->reveal(), $this->salt);
-        $repository->add($data);
     }
 
     public function testMissingRequiredFields()

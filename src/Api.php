@@ -15,20 +15,20 @@ class Api
     public function __construct(
         \MysqliDb $database,
         \Zend\Diactoros\ServerRequest $request,
-        string $salt)
-    {
+        string $salt
+    ) {
         $this->database = $database;
         $this->request = $request;
         $this->salt = $salt;
     }
 
-    public function credential_get()
+    public function credentialGet()
     {
         $repo = new CredentialsRepository($this->database, $this->salt);
         return $repo->get();
     }
 
-    public function credential_add()
+    public function credentialAdd()
     {
         $repo = new CredentialsRepository($this->database, $this->salt);
         return $repo->add($this->request->getParsedBody());
